@@ -44,41 +44,31 @@ include 'includes/header.php';
 
 
 <!-- Viajes encontrados -->
-<?php
-
-if (isset($_SESSION['viajes_encontrados'])) {
-    if (!empty($_SESSION['viajes_encontrados'])) {
-        $viajes = $_SESSION['viajes_encontrados'] ?>
+{% if (viajes_encontrados!=null and viajes_encontrados.length>0) %}
+        {% let viajes = viajes_encontrados %}
+{% %}
+{% endif %}
         <section class="container">
 
             <div class="viajes__contenedor">
-
-
-                <?php
-                foreach ($viajes as $viaje) {
-                    // Me traigo el nombre del conductor
-                    $data = file_get_contents("https://vendavalsergiomateapi.herokuapp.com/findUserById/" . $_SESSION['usuario']->_id);
-                    $nombre_conductor = json_decode($data)->data->usuario[0]->nombre;
-
-                ?>
+                {% for  viaje in viajes %}
                     <div class="viajes__card">
-                        <p class="viajes__card-conductor"><?php echo $nombre_conductor; ?></p>
-
+                        <p class="viajes__card-conductor">{{ viaje.nombre_conductor }}</p>
                         <div class="viajes__card-info">
                             <span>Fecha</span>
-                            <p><?php echo gmdate("d-m-Y", $viaje->fecha_salida); ?></p>
+                            <p>{{ viaje.fecha_salida }}</p>
 
                             <span>Hora</span>
-                            <p><?php echo gmdate("H:i", $viaje->hora_salida); ?></p>
+                            <p>{{ viaje.hora_salida }}</p>
 
                             <span>Origen</span>
-                            <p><?php echo $viaje->lugar_salida; ?></p>
+                            <p>{{ viaje.lugar_salida }}</p>
 
                             <span>Destino</span>
-                            <p><?php echo $viaje->lugar_llegada; ?></p>
+                            <p>{{ viaje.lugar_llegada }}</p>
                         </div>
                         
-                        <p class="viajes__card-precio"><?php echo $viaje->price . " €"; ?></p>
+                        <p class="viajes__card-precio">{{ viaje.precio }}€</p>
 
                         <form action="reservar_viaje.php" method="POST">
                             <input type="hidden" value="<?php echo $viaje->_id ?>" name="id">
